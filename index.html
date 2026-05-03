@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alur Kerja Sistem Deteksi Stroke - Brainlyt</title>
+    <title>Stroke Detection System Workflow - Brainlyt</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
@@ -57,14 +57,14 @@
         <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
             <div>
                 <h1 class="text-xl font-bold text-slate-900">Brainlyt Workflow</h1>
-                <p class="text-xs text-slate-500">Sistem Deteksi Dini Stroke Terintegrasi</p>
+                <p class="text-xs text-slate-500">Integrated Early Stroke Detection System</p>
             </div>
             <div class="flex gap-3">
                 <button onclick="simulateData('normal')" class="text-sm px-4 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg font-medium transition-colors border border-green-200">
-                    Simulasi Normal
+                    Normal Simulation
                 </button>
                 <button onclick="simulateData('abnormal')" class="text-sm px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg font-medium transition-colors border border-red-200">
-                    Simulasi Stroke/Abnormal
+                    Stroke/Abnormal Simulation
                 </button>
             </div>
         </div>
@@ -77,9 +77,9 @@
 
             <!-- 1. HARDWARE -->
             <div id="node-hw" class="node-card w-52 bg-white border-2 border-slate-200 rounded-2xl p-5 text-center shadow-sm">
-                <img src="/jam.png" alt="Hardware Jam" class="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-sm border border-slate-100 cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                <img src="/jam.png" alt="Smartwatch Hardware" class="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-sm border border-slate-100 cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
                 <h2 class="font-bold text-base text-slate-800">Smartwatch</h2>
-                <p class="text-xs text-slate-500 mt-1.5 leading-tight">Sensor deteksi <b>SpO2</b> & <b>HR</b> real-time</p>
+                <p class="text-xs text-slate-500 mt-1.5 leading-tight">Real-time <b>SpO2</b> & <b>HR</b> detection sensors</p>
             </div>
 
             <!-- Arrow 1 (Right) -->
@@ -87,9 +87,9 @@
 
             <!-- 2. SOFTWARE -->
             <div id="node-sw" class="node-card w-52 bg-white border-2 border-slate-200 rounded-2xl p-5 text-center shadow-sm">
-                <img src="/homepage.png" alt="Software Server" class="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-sm border border-slate-100 cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
-                <h2 class="font-bold text-base text-slate-800">Software Server</h2>
-                <p class="text-xs text-slate-500 mt-1.5 leading-tight">Terima & verifikasi data sensor medis</p>
+                <img src="/homepage.png" alt="Server Software" class="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-sm border border-slate-100 cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                <h2 class="font-bold text-base text-slate-800">Server Software</h2>
+                <p class="text-xs text-slate-500 mt-1.5 leading-tight">Receive & verify medical sensor data</p>
             </div>
 
             <!-- Arrow 2 (Right) -->
@@ -100,8 +100,8 @@
                 
                 <!-- HR Alert (Top) -->
                 <div id="node-hr-alert" class="node-card w-52 bg-white border-2 border-slate-200 rounded-xl p-3 text-center shadow-sm">
-                    <p class="font-bold text-amber-600 text-sm">Kirim Notifikasi</p>
-                    <p class="text-xs text-slate-500 mt-0.5">Ke Keluarga & Rumah Sakit</p>
+                    <p class="font-bold text-amber-600 text-sm">Send Notification</p>
+                    <p class="text-xs text-slate-500 mt-0.5">To Family & Hospital</p>
                 </div>
 
                 <!-- Arrow HR (Up) -->
@@ -109,19 +109,19 @@
 
                 <!-- Unified Processing Node -->
                 <div id="node-process" class="node-card w-64 bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm relative z-10">
-                    <p class="text-sm font-bold text-slate-800 mb-3 text-center uppercase tracking-wide border-b border-slate-100 pb-2">Pemrosesan Data</p>
+                    <p class="text-sm font-bold text-slate-800 mb-3 text-center uppercase tracking-wide border-b border-slate-100 pb-2">Data Processing</p>
                     
                     <div class="flex flex-col gap-3">
                         <!-- HR Rule -->
                         <div class="bg-rose-50 border border-rose-100 rounded-xl p-2.5 text-center">
-                            <p class="font-bold text-rose-500 text-xs mb-1">Evaluasi Detak Jantung</p>
-                            <p class="text-[10px] font-mono text-slate-600">if (&gt; 10 data kontras, HR &lt; 60 || &gt; 100)</p>
+                            <p class="font-bold text-rose-500 text-xs mb-1">Heart Rate Evaluation</p>
+                            <p class="text-[10px] font-mono text-slate-600">if (&gt; 10 contrast data, HR &lt; 60 || &gt; 100)</p>
                         </div>
                         
                         <!-- SpO2 Rule -->
                         <div class="bg-cyan-50 border border-cyan-100 rounded-xl p-2.5 text-center">
-                            <p class="font-bold text-cyan-600 text-xs mb-1">Evaluasi SpO2</p>
-                            <p class="text-[10px] font-mono text-slate-600">if (&gt; 5 data kontras, SpO2 &lt; 95 || naik turun)</p>
+                            <p class="font-bold text-cyan-600 text-xs mb-1">SpO2 Evaluation</p>
+                            <p class="text-[10px] font-mono text-slate-600">if (&gt; 5 contrast data, SpO2 &lt; 95 || fluctuating)</p>
                         </div>
                     </div>
                 </div>
@@ -131,8 +131,8 @@
 
                 <!-- SpO2 Alert (Bottom) -->
                 <div id="node-spo2-alert" class="node-card w-52 bg-white border-2 border-slate-200 rounded-xl p-3 text-center shadow-sm">
-                    <p class="font-bold text-red-600 text-sm">Kirim Notifikasi</p>
-                    <p class="text-xs text-slate-500 mt-0.5">Ke Keluarga & Rumah Sakit</p>
+                    <p class="font-bold text-red-600 text-sm">Send Notification</p>
+                    <p class="text-xs text-slate-500 mt-0.5">To Family & Hospital</p>
                 </div>
 
             </div>
@@ -142,13 +142,13 @@
 
             <!-- 4. APP FEATURES -->
             <div id="node-features" class="node-card w-64 bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
-                <p class="text-sm font-bold text-slate-800 mb-4 text-center uppercase tracking-wide border-b border-slate-100 pb-2">Fitur Tambahan</p>
+                <p class="text-sm font-bold text-slate-800 mb-4 text-center uppercase tracking-wide border-b border-slate-100 pb-2">Additional Features</p>
                 
                 <div class="flex flex-col gap-3">
                     <!-- Feature 1: Chat AI -->
                     <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
-                        <img src="/chat.png" alt="Chat AI" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
-                        <p class="text-xs font-bold text-slate-700 leading-tight">Chat AI Analitik</p>
+                        <img src="/chat.png" alt="Analytical AI Chat" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                        <p class="text-xs font-bold text-slate-700 leading-tight">Analytical AI Chat</p>
                     </div>
                     <!-- Feature 2: Download -->
                     <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
@@ -157,8 +157,8 @@
                     </div>
                     <!-- Feature 3: Scan Fisik -->
                     <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
-                        <img src="/scan.png" alt="Scan Wajah & Lengan" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
-                        <p class="text-xs font-bold text-slate-700 leading-tight">Scan Wajah & Lengan</p>
+                        <img src="/scan.png" alt="Face & Arm Scan" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                        <p class="text-xs font-bold text-slate-700 leading-tight">Face & Arm Scan</p>
                     </div>
                 </div>
             </div>
