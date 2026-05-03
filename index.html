@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alur Kerja Sistem Deteksi Stroke - Brainlyt</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Animations */
+        body {
+            /* Ensures it fits in 1 viewport exactly */
+            height: 100vh;
+            overflow: hidden; 
+        }
+        .node-card {
+            transition: all 0.4s ease-in-out;
+        }
+        .active-node {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px -5px rgba(59, 130, 246, 0.4);
+            border-color: #3b82f6 !important;
+            background-color: #eff6ff !important;
+        }
+        .active-alert {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px -5px rgba(239, 68, 68, 0.5);
+            border-color: #ef4444 !important;
+            background-color: #fef2f2 !important;
+            animation: pulse-red 1.5s infinite;
+        }
+        @keyframes pulse-red {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+            50% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+        }
+        .arrow-icon {
+            transition: all 0.3s ease;
+        }
+        .arrow-right-active {
+            color: #3b82f6 !important;
+            transform: translateX(5px);
+        }
+        .arrow-up-active {
+            color: #ef4444 !important;
+            transform: translateY(-5px);
+        }
+        .arrow-down-active {
+            color: #ef4444 !important;
+            transform: translateY(5px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 flex flex-col font-sans text-slate-800">
+
+    <!-- Header (Fixed Top) -->
+    <header class="bg-white shadow-sm border-b border-slate-200 shrink-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900">Brainlyt Workflow</h1>
+                <p class="text-xs text-slate-500">Sistem Deteksi Dini Stroke Terintegrasi</p>
+            </div>
+            <div class="flex gap-3">
+                <button onclick="simulateData('normal')" class="text-sm px-4 py-2 bg-green-100 text-green-700 hover:bg-green-200 rounded-lg font-medium transition-colors border border-green-200">
+                    Simulasi Normal
+                </button>
+                <button onclick="simulateData('abnormal')" class="text-sm px-4 py-2 bg-red-100 text-red-700 hover:bg-red-200 rounded-lg font-medium transition-colors border border-red-200">
+                    Simulasi Stroke/Abnormal
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content (Fills Remaining 1 Viewport) -->
+    <main class="flex-1 w-full flex items-center justify-center p-4 overflow-x-auto relative">
+        <!-- Flowchart Wrapper: Horizontal Layout -->
+        <div class="flex items-center gap-4 lg:gap-6 min-w-max scale-90 lg:scale-100 origin-center transition-transform">
+
+            <!-- 1. HARDWARE -->
+            <div id="node-hw" class="node-card w-52 bg-white border-2 border-slate-200 rounded-2xl p-5 text-center shadow-sm">
+                <img src="/jam.png" alt="Hardware Jam" class="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-sm border border-slate-100 cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                <h2 class="font-bold text-base text-slate-800">Smartwatch</h2>
+                <p class="text-xs text-slate-500 mt-1.5 leading-tight">Sensor deteksi <b>SpO2</b> & <b>HR</b> real-time</p>
+            </div>
+
+            <!-- Arrow 1 (Right) -->
+            <svg id="arrow-1" class="w-8 h-8 text-slate-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+
+            <!-- 2. SOFTWARE -->
+            <div id="node-sw" class="node-card w-52 bg-white border-2 border-slate-200 rounded-2xl p-5 text-center shadow-sm">
+                <img src="/homepage.png" alt="Software Server" class="w-24 h-24 mx-auto rounded-2xl object-cover mb-4 shadow-sm border border-slate-100 cursor-pointer hover:scale-105 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                <h2 class="font-bold text-base text-slate-800">Software Server</h2>
+                <p class="text-xs text-slate-500 mt-1.5 leading-tight">Terima & verifikasi data sensor medis</p>
+            </div>
+
+            <!-- Arrow 2 (Right) -->
+            <svg id="arrow-2" class="w-8 h-8 text-slate-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+
+            <!-- 3. PROCESSING & ALERTS -->
+            <div class="flex flex-col justify-center items-center gap-2">
+                
+                <!-- HR Alert (Top) -->
+                <div id="node-hr-alert" class="node-card w-52 bg-white border-2 border-slate-200 rounded-xl p-3 text-center shadow-sm">
+                    <p class="font-bold text-amber-600 text-sm">Kirim Notifikasi</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Ke Keluarga & Rumah Sakit</p>
+                </div>
+
+                <!-- Arrow HR (Up) -->
+                <svg id="arrow-hr" class="w-6 h-6 text-slate-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 10l7-7m0 0l7 7m-7-7v18"></path></svg>
+
+                <!-- Unified Processing Node -->
+                <div id="node-process" class="node-card w-64 bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm relative z-10">
+                    <p class="text-sm font-bold text-slate-800 mb-3 text-center uppercase tracking-wide border-b border-slate-100 pb-2">Pemrosesan Data</p>
+                    
+                    <div class="flex flex-col gap-3">
+                        <!-- HR Rule -->
+                        <div class="bg-rose-50 border border-rose-100 rounded-xl p-2.5 text-center">
+                            <p class="font-bold text-rose-500 text-xs mb-1">Evaluasi Detak Jantung</p>
+                            <p class="text-[10px] font-mono text-slate-600">if (&gt; 10 data kontras, HR &lt; 60 || &gt; 100)</p>
+                        </div>
+                        
+                        <!-- SpO2 Rule -->
+                        <div class="bg-cyan-50 border border-cyan-100 rounded-xl p-2.5 text-center">
+                            <p class="font-bold text-cyan-600 text-xs mb-1">Evaluasi SpO2</p>
+                            <p class="text-[10px] font-mono text-slate-600">if (&gt; 5 data kontras, SpO2 &lt; 95 || naik turun)</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Arrow SpO2 (Down) -->
+                <svg id="arrow-spo2" class="w-6 h-6 text-slate-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+
+                <!-- SpO2 Alert (Bottom) -->
+                <div id="node-spo2-alert" class="node-card w-52 bg-white border-2 border-slate-200 rounded-xl p-3 text-center shadow-sm">
+                    <p class="font-bold text-red-600 text-sm">Kirim Notifikasi</p>
+                    <p class="text-xs text-slate-500 mt-0.5">Ke Keluarga & Rumah Sakit</p>
+                </div>
+
+            </div>
+
+            <!-- Arrow 3 (Right) -->
+            <svg id="arrow-3" class="w-8 h-8 text-slate-300 arrow-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+
+            <!-- 4. APP FEATURES -->
+            <div id="node-features" class="node-card w-64 bg-white border-2 border-slate-200 rounded-2xl p-5 shadow-sm">
+                <p class="text-sm font-bold text-slate-800 mb-4 text-center uppercase tracking-wide border-b border-slate-100 pb-2">Fitur Tambahan</p>
+                
+                <div class="flex flex-col gap-3">
+                    <!-- Feature 1: Chat AI -->
+                    <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                        <img src="/chat.png" alt="Chat AI" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                        <p class="text-xs font-bold text-slate-700 leading-tight">Chat AI Analitik</p>
+                    </div>
+                    <!-- Feature 2: Download -->
+                    <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                        <img src="/download.png" alt="Download Data" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                        <p class="text-xs font-bold text-slate-700 leading-tight">Download Data</p>
+                    </div>
+                    <!-- Feature 3: Scan Fisik -->
+                    <div class="flex items-center gap-4 bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                        <img src="/scan.png" alt="Scan Wajah & Lengan" class="w-12 h-12 rounded-lg object-cover shrink-0 cursor-pointer hover:scale-110 hover:shadow-md transition-all duration-300" onclick="openImageModal(this.src, this.alt)">
+                        <p class="text-xs font-bold text-slate-700 leading-tight">Scan Wajah & Lengan</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Popup Gambar -->
+    <div id="image-modal" class="fixed inset-0 z-[100] flex items-center justify-center hidden opacity-0 transition-opacity duration-300">
+        <!-- Backdrop (Area di luar gambar untuk menutup) -->
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm cursor-pointer" onclick="closeImageModal()"></div>
+        
+        <!-- Modal Content -->
+        <div id="modal-content" class="relative z-10 flex flex-col items-center max-w-3xl w-full px-4 transform scale-95 transition-transform duration-300 pointer-events-none">
+            <!-- Tombol Silang (Close) -->
+            <button onclick="closeImageModal()" class="absolute -top-12 right-4 text-white/70 hover:text-white pointer-events-auto bg-slate-800/50 hover:bg-slate-800 rounded-full p-2 transition-colors">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+            
+            <!-- Gambar Utama -->
+            <img id="modal-image" src="" alt="" class="max-w-full max-h-[75vh] object-contain rounded-2xl shadow-2xl bg-white p-2 pointer-events-auto">
+            
+            <!-- Teks Informatif -->
+            <div class="mt-4 pointer-events-auto">
+                <p id="modal-caption" class="text-white text-sm font-medium text-center bg-slate-800/90 px-6 py-2.5 rounded-full shadow-lg border border-slate-700/50 backdrop-blur-md"></p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        function resetSimulation() {
+            // Reset Cards
+            document.querySelectorAll('.node-card').forEach(n => {
+                n.classList.remove('active-node', 'active-alert');
+            });
+            // Reset Arrows
+            document.querySelectorAll('.arrow-icon').forEach(a => {
+                a.classList.remove('arrow-right-active', 'arrow-up-active', 'arrow-down-active');
+            });
+        }
+
+        async function simulateData(scenario) {
+            resetSimulation();
+
+            // 1. Hardware gets data
+            document.getElementById('node-hw').classList.add('active-node');
+            await sleep(500);
+            document.getElementById('arrow-1').classList.add('arrow-right-active');
+            await sleep(300);
+
+            // 2. Software receives
+            document.getElementById('node-sw').classList.add('active-node');
+            await sleep(500);
+            document.getElementById('arrow-2').classList.add('arrow-right-active');
+            await sleep(400);
+
+            // 3. Data enters Unified Processing
+            document.getElementById('node-process').classList.add('active-node');
+            await sleep(800);
+
+            if (scenario === 'abnormal') {
+                // Trigger Up and Down arrows for alerts
+                document.getElementById('arrow-hr').classList.add('arrow-up-active');
+                document.getElementById('arrow-spo2').classList.add('arrow-down-active');
+                await sleep(400);
+                
+                // Triggers Alert Boxes
+                document.getElementById('node-hr-alert').classList.add('active-alert');
+                document.getElementById('node-spo2-alert').classList.add('active-alert');
+            }
+
+            // 4. Continue to Features
+            document.getElementById('arrow-3').classList.add('arrow-right-active');
+            await sleep(400);
+            document.getElementById('node-features').classList.add('active-node');
+        }
+
+        // --- Logika Modal Popup Gambar ---
+        const modal = document.getElementById('image-modal');
+        const modalImg = document.getElementById('modal-image');
+        const modalCaption = document.getElementById('modal-caption');
+        const modalContent = document.getElementById('modal-content');
+
+        function openImageModal(src, alt) {
+            modalImg.src = src;
+            modalImg.alt = alt;
+            modalCaption.textContent = alt; // Menggunakan alt text sebagai caption informatif
+            
+            modal.classList.remove('hidden');
+            // Memicu reflow browser agar animasi transisi berjalan
+            void modal.offsetWidth;
+            
+            modal.classList.remove('opacity-0');
+            modalContent.classList.remove('scale-95');
+            modalContent.classList.add('scale-100');
+        }
+
+        function closeImageModal() {
+            modal.classList.add('opacity-0');
+            modalContent.classList.remove('scale-100');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                modalImg.src = '';
+            }, 300); // Waktu delay disesuaikan dengan durasi animasi (duration-300)
+        }
+    </script>
+</body>
+</html>
